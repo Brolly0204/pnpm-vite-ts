@@ -1,11 +1,27 @@
 
 <script lang="ts">
-  import { ref, defineComponent, getCurrentInstance } from 'vue'
-  export default defineComponent({
+  import { ref, defineComponent, getCurrentInstance, DirectiveBinding, ComponentPublicInstance } from 'vue'
+const myComp = defineComponent({
     props: {
       msg: {
         type: String,
         default: ''
+      }
+    },
+     directives: {
+    // 点击dom元素外面
+    clickOutside: {
+      mounted(el, binding: DirectiveBinding, vNode) {
+          // ;(binding.instance as ComponentPublicInstance<{
+          //   sayHi: () => void
+          // }>).sayHi()
+          ;(binding.instance as InstanceType<typeof myComp>).sayHi()
+        }
+      }
+    },
+    methods: {
+      hh() {
+        console.log('hh')
       }
     },
     setup() {
@@ -18,15 +34,17 @@
         })
       }
       return {
-        count
+        count,
+        sayHi
       }
     }
   })
+  export default myComp
 </script>
 <template>
   <h1>{{ msg }}</h1>
 
-  <div class="card">
+  <div class="card" v-clickOutside>
     <button type="button" @click="count++">count is {{ count }}</button>
     <p>
       Edit
